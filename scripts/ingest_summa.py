@@ -136,9 +136,7 @@ class SummaParser:
         re.IGNORECASE,
     )
     RE_QUESTION_HEADER = re.compile(r"^QUESTION\s+(?P<q>\d+)", re.IGNORECASE)
-    RE_SECTION_OBJECTION = re.compile(
-        r"^(?:Objection|Obj\.)\s*(?P<num>\d+)\s*:?", re.IGNORECASE
-    )
+    RE_SECTION_OBJECTION = re.compile(r"^(?:Objection|Obj\.)\s*(?P<num>\d+)\s*:?", re.IGNORECASE)
     RE_SECTION_ON_THE_CONTRARY = re.compile(r"^_?On the contrary,?_?", re.IGNORECASE)
     RE_SECTION_I_ANSWER_THAT = re.compile(r"^_?I answer that,?_?", re.IGNORECASE)
     RE_SECTION_REPLY = re.compile(
@@ -268,20 +266,14 @@ class SummaParser:
                     buf.append(remainder)
                 continue
 
-            if (
-                self.RE_SECTION_ON_THE_CONTRARY.match(s)
-                and self.current_article is not None
-            ):
+            if self.RE_SECTION_ON_THE_CONTRARY.match(s) and self.current_article is not None:
                 self._switch_section("on_the_contrary", None, buf)
                 remainder = self.RE_SECTION_ON_THE_CONTRARY.sub("", s).lstrip(" ,:-\t")
                 if remainder:
                     buf.append(remainder)
                 continue
 
-            if (
-                self.RE_SECTION_I_ANSWER_THAT.match(s)
-                and self.current_article is not None
-            ):
+            if self.RE_SECTION_I_ANSWER_THAT.match(s) and self.current_article is not None:
                 self._switch_section("i_answer_that", None, buf)
                 remainder = self.RE_SECTION_I_ANSWER_THAT.sub("", s).lstrip(" ,:-\t")
                 if remainder:
@@ -406,13 +398,9 @@ class DB:
 
     def is_question_complete(self, question_id: int) -> bool:
         cur = self.conn.cursor()
-        cur.execute(
-            "SELECT COUNT(*) FROM CorrectResponse WHERE question_id=?", (question_id,)
-        )
+        cur.execute("SELECT COUNT(*) FROM CorrectResponse WHERE question_id=?", (question_id,))
         has_correct = int(cur.fetchone()[0]) > 0
-        cur.execute(
-            "SELECT COUNT(*) FROM IncorrectResponse WHERE question_id=?", (question_id,)
-        )
+        cur.execute("SELECT COUNT(*) FROM IncorrectResponse WHERE question_id=?", (question_id,))
         has_incorrect = int(cur.fetchone()[0]) > 0
         return has_correct and has_incorrect
 
@@ -488,9 +476,7 @@ def build_prompt(article: Article) -> tuple[str, str]:
         "- Write as if the article's teaching is correct; avoid hedging or disputing the conclusion."
     )
     parts.append("")
-    parts.append(
-        "Return JSON with keys: question_text, correct_answer, incorrect_options[]."
-    )
+    parts.append("Return JSON with keys: question_text, correct_answer, incorrect_options[].")
     parts.append("Each incorrect_options item: { option, refutation }.")
     parts.append("")
     parts.append(f"Article title: {article.raw_title}")
@@ -520,9 +506,7 @@ def build_prompt(article: Article) -> tuple[str, str]:
 def heuristic_fallback(article: Article) -> dict:
     # Minimal transformation without OpenAI: use raw title as question; correct from 'I answer that'
     q = article.raw_title
-    correct = (
-        "" if not article.i_answer_that else normalize_whitespace(article.i_answer_that)
-    )
+    correct = "" if not article.i_answer_that else normalize_whitespace(article.i_answer_that)
     incorrect = []
     for n, ttxt in sorted(article.objections, key=lambda x: x[0]):
         ref = article.replies.get(n) if article.replies else None
@@ -624,9 +608,7 @@ def process_article(
         a=article.article_number,
         question_text=question_text,
     )
-    db.replace_responses(
-        question_id=qid, correct_text=correct_answer, incorrect=incorrect
-    )
+    db.replace_responses(question_id=qid, correct_text=correct_answer, incorrect=incorrect)
 
 
 # -----------------------------
@@ -635,19 +617,11 @@ def process_article(
 
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
-    ap = argparse.ArgumentParser(
-        description="Ingest Summa articles into SQLite as quiz questions"
-    )
-    ap.add_argument(
-        "--source", default="summa_theologica.txt", help="Path to Summa text file"
-    )
-    ap.add_argument(
-        "--db", default="lucelingo.db", help="Path to SQLite DB to create/use"
-    )
+    ap = argparse.ArgumentParser(description="Ingest Summa articles into SQLite as quiz questions")
+    ap.add_argument("--source", default="summa_theologica.txt", help="Path to Summa text file")
+    ap.add_argument("--db", default="lucelingo.db", help="Path to SQLite DB to create/use")
     ap.add_argument("--model", default=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"))
-    ap.add_argument(
-        "--max-articles", type=int, default=None, help="Process only first N articles"
-    )
+    ap.add_argument("--max-articles", type=int, default=None, help="Process only first N articles")
     ap.add_argument(
         "--range",
         default=None,
@@ -682,9 +656,7 @@ def main(argv: list[str]) -> int:
     args = parse_args(argv)
     api_key = os.environ.get("OPENAI_API_KEY")
     if not args.skip_openai and not api_key:
-        print(
-            "ERROR: OPENAI_API_KEY not set and --skip-openai not used", file=sys.stderr
-        )
+        print("ERROR: OPENAI_API_KEY not set and --skip-openai not used", file=sys.stderr)
         return 2
 
     # Instantiate OpenAI SDK client
@@ -741,13 +713,9 @@ def main(argv: list[str]) -> int:
             # Otherwise, process or reprocess
             try:
                 print(f"{ident}: generating...", flush=True)
-                process_article(
-                    art, db, client=client, rate_limit_delay=delay, model=args.model
-                )
+                process_article(art, db, client=client, rate_limit_delay=delay, model=args.model)
                 processed += 1
-                print(
-                    f"{ident}: done. Totals: processed={processed}, skipped={skipped}"
-                )
+                print(f"{ident}: done. Totals: processed={processed}, skipped={skipped}")
             except Exception as e:
                 print(f"{ident}: ERROR: {e}", file=sys.stderr)
             if args.max_articles and processed >= args.max_articles:

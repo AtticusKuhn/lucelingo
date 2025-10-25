@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 import random
-from typing import List, Dict
+from typing import Dict, List
 
-from django.http import HttpRequest, HttpResponse, Http404
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
-from .models import Question, CorrectResponse, IncorrectResponse
+from .models import CorrectResponse, IncorrectResponse, Question
 
 
 def _get_random_question() -> Question | None:
@@ -27,18 +27,22 @@ def home(request: HttpRequest) -> HttpResponse:
     choices: List[Dict] = []
     correct = CorrectResponse.objects.filter(question=q).first()
     if correct:
-        choices.append({
-            "id": correct.id,
-            "text": correct.response_text,
-            "kind": "correct",
-        })
+        choices.append(
+            {
+                "id": correct.id,
+                "text": correct.response_text,
+                "kind": "correct",
+            }
+        )
     incorrect = list(IncorrectResponse.objects.filter(question=q))
     for ir in incorrect:
-        choices.append({
-            "id": ir.id,
-            "text": ir.response_text,
-            "kind": "incorrect",
-        })
+        choices.append(
+            {
+                "id": ir.id,
+                "text": ir.response_text,
+                "kind": "incorrect",
+            }
+        )
     random.shuffle(choices)
     return render(request, "quiz/home.html", {"question": q, "choices": choices})
 
@@ -51,18 +55,22 @@ def random_question_fragment(request: HttpRequest) -> HttpResponse:
     choices: List[Dict] = []
     correct = CorrectResponse.objects.filter(question=q).first()
     if correct:
-        choices.append({
-            "id": correct.id,
-            "text": correct.response_text,
-            "kind": "correct",
-        })
+        choices.append(
+            {
+                "id": correct.id,
+                "text": correct.response_text,
+                "kind": "correct",
+            }
+        )
     incorrect = list(IncorrectResponse.objects.filter(question=q))
     for ir in incorrect:
-        choices.append({
-            "id": ir.id,
-            "text": ir.response_text,
-            "kind": "incorrect",
-        })
+        choices.append(
+            {
+                "id": ir.id,
+                "text": ir.response_text,
+                "kind": "incorrect",
+            }
+        )
     random.shuffle(choices)
     return render(
         request,
@@ -113,4 +121,3 @@ def answer_view(request: HttpRequest) -> HttpResponse:
         raise Http404("Invalid kind")
 
     return render(request, "quiz/answer_fragment.html", context)
-

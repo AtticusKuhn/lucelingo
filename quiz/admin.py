@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Question, CorrectResponse, IncorrectResponse
+from .models import CorrectResponse, IncorrectResponse, Question
 
 
 @admin.register(Question)
@@ -17,4 +17,3 @@ class CorrectResponseAdmin(admin.ModelAdmin):
 @admin.register(IncorrectResponse)
 class IncorrectResponseAdmin(admin.ModelAdmin):
     list_display = ("id", "question", "response_text")
-

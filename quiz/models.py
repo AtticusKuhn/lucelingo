@@ -24,7 +24,10 @@ class Question(models.Model):
 class CorrectResponse(models.Model):
     id = models.BigAutoField(primary_key=True)
     question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, db_column="question_id", related_name="correct_responses"
+        Question,
+        on_delete=models.CASCADE,
+        db_column="question_id",
+        related_name="correct_responses",
     )
     response_text = models.TextField()
 
@@ -39,7 +42,10 @@ class CorrectResponse(models.Model):
 class IncorrectResponse(models.Model):
     id = models.BigAutoField(primary_key=True)
     question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, db_column="question_id", related_name="incorrect_responses"
+        Question,
+        on_delete=models.CASCADE,
+        db_column="question_id",
+        related_name="incorrect_responses",
     )
     response_text = models.TextField()
     refutation_text = models.TextField(null=True, blank=True)
@@ -50,4 +56,3 @@ class IncorrectResponse(models.Model):
 
     def __str__(self) -> str:  # pragma: no cover
         return f"Incorrect for Q{self.question_id}"
-
