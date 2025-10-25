@@ -1,21 +1,28 @@
 { pkgs ? import <nixpkgs-unstable> {} }:
-with pkgs;
 let
-my-python-packages = ps: with ps; [
-  ];
-  my-python = pkgs.python3.withPackages my-python-packages;
+  # Pin to a single Python toolchain to avoid mixing 3.12/3.13 site-packages
+  py = pkgs.python312;
+  pyPkgs = pkgs.python312Packages;
+  myPython = py.withPackages (ps: with pyPkgs; [
+    # Core deps
+    openai
+    pydantic
+    pydantic-core
+    langchain
+    langchain-community
+
+    # Dev tools (keep on same interpreter to avoid PYTHONPATH contamination)
+    black
+    ruff
+  ]);
 in
-mkShell {
-  buildInputs = [
-    my-python
+pkgs.mkShell {
+  packages = [
+    myPython
     pkgs.unzip
-    pkgs.aider-chat
+    pkgs.git
+    pkgs.sqlitebrowser
+    pkgs.sqlite
     pkgs.codex
-    black                           # Code formatter
-    ruff                            # Linter
-    git
-    # Add other development tools as needed
-    sqlitebrowser 
-    sqlite
   ];
 }
