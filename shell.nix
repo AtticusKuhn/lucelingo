@@ -10,6 +10,7 @@ let
     pydantic-core
     langchain
     langchain-community
+    django
 
     # Dev tools (keep on same interpreter to avoid PYTHONPATH contamination)
     black

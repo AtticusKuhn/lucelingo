@@ -1,0 +1,10 @@
+{% extends "quiz/base.html" %}
+{% block content %}
+  <div id="question-area">
+    {% include "quiz/question_fragment.html" %}
+  </div>
+  <div class="footer muted">
+    Tip: Click an option to see feedback.
+  </div>
+{% endblock %}
+

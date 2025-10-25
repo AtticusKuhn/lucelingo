@@ -1,0 +1,18 @@
+<div class="pill">P{{ question.part_number }} • Q{{ question.question_number }} • A{{ question.article_number }}</div>
+<div class="question" style="margin-top: 10px;">{{ question.question_text }}</div>
+
+{% if choices %}
+  <div class="options">
+    {% for c in choices %}
+      <button class="btn" 
+              hx-get="{% url 'quiz:answer' %}?question_id={{ question.id }}&response_id={{ c.id }}&kind={{ c.kind }}" 
+              hx-target="#question-area" 
+              hx-swap="innerHTML">
+        {{ c.text }}
+      </button>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="muted">No options available for this question.</div>
+{% endif %}
+

@@ -1,0 +1,14 @@
+<div class="pill">P{{ question.part_number }} • Q{{ question.question_number }} • A{{ question.article_number }}</div>
+<div class="question" style="margin-top: 10px;">{{ question.question_text }}</div>
+
+<div class="feedback" style="margin-top: 12px;">
+  <strong>{{ feedback_title }}</strong>
+  {% if feedback_text %}
+    <div style="margin-top: 8px;">{{ feedback_text }}</div>
+  {% endif %}
+  <div style="margin-top: 12px;">
+    <button class="btn" hx-get="{% url 'quiz:question_fragment' %}" hx-target="#question-area" hx-swap="innerHTML">Another random question</button>
+  </div>
+  <div class="muted" style="margin-top: 6px;">Choices are shuffled each time.</div>
+  </div>
+

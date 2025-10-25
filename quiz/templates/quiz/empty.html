@@ -1,0 +1,9 @@
+{% extends "quiz/base.html" %}
+{% block content %}
+  <div class="question">No questions found.</div>
+  <div class="muted">
+    Populate the database by running the ingestion script:
+    <pre>scripts/ingest_summa.py --source summa_theologica.txt --db lucelingo.db --max-articles 5</pre>
+  </div>
+{% endblock %}
+

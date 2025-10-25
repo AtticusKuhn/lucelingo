@@ -15,4 +15,6 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 *.db
+*.db-shm
+*.db-wal
 *.sqlite3

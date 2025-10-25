@@ -29,11 +29,10 @@
 - Determinism: low temperature to keep outputs stable; heuristic fallback when `--skip-openai`.
 - Safety: avoids attributions like “Aquinas says…”; outputs framed as standalone catechetical content.
 
-## Backend (Planned)
+## Backend
 
-- Minimal Python app (e.g., FastAPI or Flask) serving HTMX partials:
-  - `GET /` → next question
-  - `POST /answer` → evaluate and return feedback partial
-  - `GET /review?id=...` → show question, correct and refutations
-- Simple selection: random unseen or within a Part/Question range.
-
+- Django app serving HTMX partials:
+  - `GET /` → renders a random question and options
+  - `GET /answer` → evaluates selection and returns feedback partial
+  - `GET /question` → returns another random question partial
+- Selection: random question for MVP; filters by Part/Question can be added.
