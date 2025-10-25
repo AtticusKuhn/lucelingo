@@ -10,3 +10,9 @@ htmlcov
 .env
 AGENTS.md
 summa_theologica.txt
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.db
+*.sqlite3
