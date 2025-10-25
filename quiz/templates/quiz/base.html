@@ -19,21 +19,24 @@
       .footer { margin-top: 16px; }
       .pill { display: inline-block; padding: 6px 10px; border-radius: 999px; border: 1px solid #cbd5e1; background: #f8fafc; font-size: 12px; color: #334155; }
       .feedback { border: 1px solid #cbd5e1; background: #f8fafc; padding: 12px; border-radius: 10px; }
-      .audio-bar { background: #0f172a; color: #fff; padding: 6px 20px; }
-      .audio-bar audio { width: 100%; }
+      /* removed visible audio bar; audio now hidden and autoplaying */
     </style>
   </head>
   <body>
     {% load static %}
     <header>
       <div class="brand">
-        <img src="{% static 'lucelingo_seal_logo.png' %}" alt="LuceLingo logo" height="36" width="36" />
+        <img src="{% static 'lucelingo_seal_logo.png' %}" alt="LuceLingo logo" height="72" width="72" />
         <h1>LuceLingo</h1>
       </div>
     </header>
-    <div class="audio-bar">
-      <audio src="{% static 'luce_song.mp3' %}" autoplay loop controls playsinline></audio>
-    </div>
+    <audio src="{% static 'luce_song.mp3' %}"
+           autoplay
+           loop
+           playsinline
+           preload="auto"
+           aria-hidden="true"
+           style="display:none"></audio>
     <main>
       {% block content %}{% endblock %}
     </main>
